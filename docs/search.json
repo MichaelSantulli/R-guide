@@ -11,14 +11,14 @@
     "href": "index.html",
     "title": "R for Demographic Data Analysis",
     "section": "",
-    "text": "R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.\n\n\ntidycensus"
+    "text": "R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.\nR comes preloaded with many useful functions for statistical analysis, but much more functionality is available through extensions called packages that are developed by other R users.\nOne example is tidycensus, a package that allows you to automatically download data and spatial attributes from the US Census Bureau’s website.\nTo install a package you would use the command below with the name of the package to install in quotes:\n\ninstall.packages(\"tidycensus\")\n\nYou only need to install each package once on your computer, but whenever you are writing code in R you will have to load the relevant packages with the library() function.\n\nlibrary(tidycensus)\n\n\n\ntidycensus"
   },
   {
     "objectID": "index.html#introduction-to-r-r-studio",
     "href": "index.html#introduction-to-r-r-studio",
     "title": "R for Demographic Data Analysis",
     "section": "",
-    "text": "R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.\n\n\ntidycensus"
+    "text": "R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.\nR comes preloaded with many useful functions for statistical analysis, but much more functionality is available through extensions called packages that are developed by other R users.\nOne example is tidycensus, a package that allows you to automatically download data and spatial attributes from the US Census Bureau’s website.\nTo install a package you would use the command below with the name of the package to install in quotes:\n\ninstall.packages(\"tidycensus\")\n\nYou only need to install each package once on your computer, but whenever you are writing code in R you will have to load the relevant packages with the library() function.\n\nlibrary(tidycensus)\n\n\n\ntidycensus"
   },
   {
     "objectID": "index.html#importing-data",
