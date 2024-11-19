@@ -1,11 +1,17 @@
 ---
-title: "website"
+title: "R for Demographic Data Analysis"
 ---
 
-This is a Quarto website.
+## Introduction to R & R Studio
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+### Important R Packages
 
-```{r}
-1 + 1
-```
+## Importing Data
+
+### Census Data with tidyCensus
+
+### Reading Files
+
+## Transform and Analyze Data
+
+## Data Visualization

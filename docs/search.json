@@ -1,9 +1,23 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "website",
-    "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "objectID": "index.html#importing-data",
+    "href": "index.html#importing-data",
+    "title": "R for Demographic Data Analysis",
+    "section": "Importing Data",
+    "text": "Importing Data\n\nCensus Data with tidyCensus\n\n\nReading Files"
+  },
+  {
+    "objectID": "index.html#transform-and-analyze-data",
+    "href": "index.html#transform-and-analyze-data",
+    "title": "R for Demographic Data Analysis",
+    "section": "Transform and Analyze Data",
+    "text": "Transform and Analyze Data"
+  },
+  {
+    "objectID": "index.html#data-visualization",
+    "href": "index.html#data-visualization",
+    "title": "R for Demographic Data Analysis",
+    "section": "Data Visualization",
+    "text": "Data Visualization"
   }
 ]
