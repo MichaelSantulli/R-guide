@@ -4,7 +4,14 @@ title: "R for Demographic Data Analysis"
 
 ## Introduction to R & R Studio
 
+R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.
+
+
+
 ### Important R Packages
+
+`tidycensus` 
+
 
 ## Importing Data
 
