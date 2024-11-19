@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This website contains examples for using R to process demographic data."
+  },
+  {
     "objectID": "index.html#importing-data",
     "href": "index.html#importing-data",
     "title": "R for Demographic Data Analysis",
