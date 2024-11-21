@@ -29,7 +29,6 @@ library(mapview)
 
 ### Census data with tidycensus
 ```{r}
-#| warning: false
 race_vars <- c(
   "% Hispanic or Latino" = "DP05_0073P",
   "% White" = "DP05_0079P",
@@ -46,6 +45,7 @@ austin_counties <- c("Travis", "Hays", "Williamson")
 
 
 ```{r}
+#| warning: false
 austin_race <- get_acs(
   geography = "tract",
   variables = race_vars,
