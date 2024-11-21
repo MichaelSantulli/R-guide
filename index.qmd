@@ -29,6 +29,7 @@ library(mapview)
 
 ### Census data with tidycensus
 ```{r}
+#| warning: false
 race_vars <- c(
   "% Hispanic or Latino" = "DP05_0073P",
   "% White" = "DP05_0079P",
@@ -41,7 +42,10 @@ race_vars <- c(
 )
 
 austin_counties <- c("Travis", "Hays", "Williamson")
+```
 
+
+```{r}
 austin_race <- get_acs(
   geography = "tract",
   variables = race_vars,
@@ -54,6 +58,7 @@ austin_race <- get_acs(
 )
 ```
 
+
 ### Import geographies with tigris
 ```{r}
 austin_boundary <- places(
@@ -64,8 +69,17 @@ austin_boundary <- places(
 ```
 
 ## Exploring the data
+
+```{r}
+glimpse(austin_race)
+```
+
 ```{r}
 view(austin_race)
+```
+
+```{r}
+mapview(austin_race, zcol = "% Hispanic or LatinoE")
 ```
 
 
