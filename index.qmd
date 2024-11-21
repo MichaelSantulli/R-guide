@@ -4,14 +4,15 @@ title: "R for Demographic Data Analysis"
 
 R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.
 
-R comes preloaded with many useful functions for statistical analysis, but much more functionality is available through extensions called packages that are developed by other R users.
+This demo shows how to use R to pull data from the Census API, explore the data in table and map form, and export to a shapefile that can be used to create publication-ready maps in ArcGIS.
 
-One example is `tidycensus`, a package that allows you to automatically download data and spatial attributes from the US Census Bureau's website.
+## Loading required R packages
+R comes preloaded with many useful functions for statistical analysis, but much more functionality is available through extensions called packages that are developed by other R users. 
 
-To install a package you would use the command below with the name of the package to install in quotes:
+You only need to install each package once on your computer, but whenever you are writing code in R you will have to load the relevant packages with the library() function.
 
-You only need to install each package once on your computer, but whenever you are writing code in R you will have to load the relevant packages with the `library()` function.
 ```{r}
+#|output: false
 library(tidycensus)
 library(tigris)
 library(tidyverse)
@@ -19,15 +20,18 @@ library(sf)
 library(mapview)
 ```
 
-
-### Important R Packages
-
-`tidycensus` 
+We have loaded several helpful packages:
+`tidycensus` contains functions for downloading datasets directly from the Census Bureau API, including associated geometries.
+`tigris` can be used to download census geometries without any attribute data (the boundary of Austin, for example).
+`tidyverse` is actually a collection of several packages such as `tidyr`, `dplyr`, and `ggplot2` that can be used for transforming, analyzing, and visualizing data.
+`sf` is a package that allows essential GIS workflows to be executed in R.
+`mapview` provides functions for generating interactive maps. Other packages exist for creating detailed maps, but this one is focused on creating quick and simple maps for data exploration.
 
 
 ## Importing data
 
 ### Census data with tidycensus
+Before we import census data, it's often helpful to define what data we need and save them as variables in R that can be referenced later in our code.
 ```{r}
 race_vars <- c(
   "% Hispanic or Latino" = "DP05_0073P",
@@ -45,7 +49,7 @@ austin_counties <- c("Travis", "Hays", "Williamson")
 
 
 ```{r}
-#| warning: false
+#| output: false
 austin_race <- get_acs(
   geography = "tract",
   variables = race_vars,
