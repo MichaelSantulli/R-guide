@@ -2,8 +2,6 @@
 title: "R for Demographic Data Analysis"
 ---
 
-## Introduction to R & R Studio
-
 R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.
 
 R comes preloaded with many useful functions for statistical analysis, but much more functionality is available through extensions called packages that are developed by other R users.
@@ -11,13 +9,14 @@ R comes preloaded with many useful functions for statistical analysis, but much 
 One example is `tidycensus`, a package that allows you to automatically download data and spatial attributes from the US Census Bureau's website.
 
 To install a package you would use the command below with the name of the package to install in quotes:
-```{r}
-#| eval: false
-install.packages("tidycensus")
-```
+
 You only need to install each package once on your computer, but whenever you are writing code in R you will have to load the relevant packages with the `library()` function.
 ```{r}
 library(tidycensus)
+library(tigris)
+library(tidyverse)
+library(sf)
+library(mapview)
 ```
 
 
@@ -26,12 +25,55 @@ library(tidycensus)
 `tidycensus` 
 
 
-## Importing Data
+## Importing data
 
-### Census Data with tidyCensus
+### Census data with tidycensus
+```{r}
+race_vars <- c(
+  "% Hispanic or Latino" = "DP05_0073P",
+  "% White" = "DP05_0079P",
+  "% Black" = "DP05_0080P",
+  "% AIAN" = "DP05_0081P",
+  "% Asian" = "DP05_0082P",
+  "% Pacific Islander" = "DP05_0083P",
+  "% Other Race" = "DP05_0084P",
+  "% Two or More Races" = "DP05_0085P"
+)
 
-### Reading Files
+austin_counties <- c("Travis", "Hays", "Williamson")
 
-## Transform and Analyze Data
+austin_race <- get_acs(
+  geography = "tract",
+  variables = race_vars,
+  year = 2022,
+  output = "wide",
+  state = "TX",
+  county = austin_counties,
+  geometry = TRUE,
+  cb = FALSE
+)
+```
 
-## Data Visualization
+### Import geographies with tigris
+```{r}
+austin_boundary <- places(
+  state = "TX"
+)%>%
+  filter(str_detect(NAME, "Austin"))
+
+```
+
+## Exploring the data
+```{r}
+view(austin_race)
+```
+
+
+## Exporting shapefiles for ArcGIS
+```{r}
+#|eval: false
+```
+
+
+
+
