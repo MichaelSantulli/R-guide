@@ -65,6 +65,7 @@ austin_race <- get_acs(
 
 ### Import geographies with tigris
 ```{r}
+#| output: false
 austin_boundary <- places(
   state = "TX"
 )%>%
@@ -89,7 +90,7 @@ mapview(austin_race, zcol = "% Hispanic or LatinoE")
 
 ## Exporting shapefiles for ArcGIS
 ```{r}
-#|eval: false
+
 ```
 
 
