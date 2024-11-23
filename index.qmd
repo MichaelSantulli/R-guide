@@ -69,7 +69,8 @@ austin_race <- get_acs(
 austin_boundary <- places(
   state = "TX"
 )%>%
-  filter(str_detect(NAME, "Austin"))
+  filter(str_detect(NAME, "Austin"))%>%
+    st_cast("MULTILINESTRING")
 
 ```
 
@@ -84,6 +85,9 @@ view(austin_race)
 ```
 
 ```{r}
+austin_race %>%
+  st_filter(austin_boundary, .predicate = st_intersects)
+
 mapview(austin_race, zcol = "% Hispanic or LatinoE")
 ```
 
