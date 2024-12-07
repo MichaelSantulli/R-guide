@@ -46,9 +46,9 @@ race_vars <- c(
   "% Hispanic or Latino" = "DP05_0073P",
   "% White" = "DP05_0079P",
   "% Black" = "DP05_0080P",
-  "% AIAN" = "DP05_0081P",
+  "% American Indian and Alaska Native" = "DP05_0081P",
   "% Asian" = "DP05_0082P",
-  "% Pacific Islander" = "DP05_0083P",
+  "% Native Hawaiian and Other Pacific Islander" = "DP05_0083P",
   "% Other Race" = "DP05_0084P",
   "% Two or More Races" = "DP05_0085P"
 )
@@ -134,8 +134,15 @@ mapview(austin_race, zcol = "% Hispanic or LatinoE")
 
 Although R can be used to create interactive web maps, often we will want to simply use R for importing and cleaning the data, and then using an enterprise tool like ArcGIS Pro to create the final layers to publish.
 
-The `sf` package contains the function `st_write` which can export our data into a wide variety of file formats. Here we export as a shapefile that can be easily opened in ArcGIS.
+The `sf` package contains the function `st_write` which can export our data into a wide variety of file formats. Here we export as a shapefile that can be easily opened in ArcGIS by specifying the file extension as `.shp`.
 
 ```{r}
+#| eval: false 
+st_write(austin_race, "Austin Demographics 2022 Race.shp")
+```
+
+You can also export as a single `.geojson` file which can be easily read into future R scripts.
+```{r}
+#| eval: false 
 st_write(austin_race, "Austin Demographics 2022 Race.geojson")
 ```
