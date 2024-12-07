@@ -2,5 +2,5 @@
 title: "About"
 ---
 
-This website contains examples for using R to process demographic data.
+This demo 
 

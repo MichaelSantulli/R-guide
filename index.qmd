@@ -97,7 +97,7 @@ Make sure to set `cb = FALSE` to get the same polygons as when downloading from 
 
 ### Import geographies with tigris
 
-If you don't need any tablular data and just want geographic layers from the census, you can use the `tigris` package to download any of the TIGER shapefiles. Below, for example, we download the geography for the City of Austin.
+If you don't need any tablular data and just want geographic layers from the census, you can use the `tigris` package to download any of the TIGER shapefiles. Below, for example, we download the geography for census places in Texas and then filter to get only the city of Austin's boundary.
 
 ```{r}
 #| output: false
@@ -137,5 +137,5 @@ Although R can be used to create interactive web maps, often we will want to sim
 The `sf` package contains the function `st_write` which can export our data into a wide variety of file formats. Here we export as a shapefile that can be easily opened in ArcGIS.
 
 ```{r}
-
+st_write(austin_race, "Austin Demographics 2022 Race.geojson")
 ```
