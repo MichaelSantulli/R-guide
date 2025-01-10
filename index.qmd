@@ -137,12 +137,15 @@ Although R can be used to create interactive web maps, often we will want to sim
 The `sf` package contains the function `st_write` which can export our data into a wide variety of file formats. Here we export as a shapefile that can be easily opened in ArcGIS by specifying the file extension as `.shp`.
 
 ```{r}
-#| eval: false 
+#| eval: false
+
+#Set coordinate reference system (CRS) to EPSG code 2277
+st_transform(austin_race, 2277) 
 st_write(austin_race, "Austin Demographics 2022 Race.shp")
 ```
 
 You can also export as a single `.geojson` file which can be easily read into future R scripts.
 ```{r}
-#| eval: false 
+#| eval: false
 st_write(austin_race, "Austin Demographics 2022 Race.geojson")
 ```
