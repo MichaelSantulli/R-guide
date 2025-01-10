@@ -127,7 +127,7 @@ view(austin_race)
 Finally, the `mapview()` function can be used to easily generate a simple interactive map of your data. Use `zcol` to define which column you want to visualize.
 
 ```{r}
-mapview(austin_race, zcol = "% Hispanic or LatinoE")
+mapview(austin_race, zcol = "% BlackE")
 ```
 
 ## Exporting shapefiles for ArcGIS
@@ -145,6 +145,7 @@ st_write(austin_race, "Austin Demographics 2022 Race.shp")
 ```
 
 You can also export as a single `.geojson` file which can be easily read into future R scripts.
+
 ```{r}
 #| eval: false
 st_write(austin_race, "Austin Demographics 2022 Race.geojson")
