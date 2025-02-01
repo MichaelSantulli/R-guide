@@ -2,6 +2,8 @@
 title: "R for Demographic Data Analysis"
 ---
 
+TEST EDIT
+
 R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.
 
 This demo shows how to use R to pull data from the Census API, explore the data in table and map form, and export to a shapefile that can be used to create publication-ready maps in ArcGIS.
