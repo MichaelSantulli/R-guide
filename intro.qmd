@@ -1,0 +1,152 @@
+---
+title: "Introduction"
+---
+
+R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.
+
+This demo shows how to use R to pull data from the Census API, explore the data in table and map form, and export to a shapefile that can be used to create publication-ready maps in ArcGIS.
+
+## Loading required R packages
+
+R comes preloaded with many useful functions for statistical analysis, but much more functionality is available through extensions called packages that are developed by other R users.
+
+You only need to install each package once on your computer, but whenever you are writing code in R you will have to load the relevant packages with the library() function.
+
+```{r}
+#| warning: false
+library(tidycensus)
+library(tigris)
+library(tidyverse)
+library(sf)
+library(mapview)
+```
+
+Each of these packages provides us with various helpful functions for geospatial data analysis:
+
+-   `tidycensus` contains functions for downloading datasets directly from the Census Bureau API, including associated geometries.
+
+-   `tigris` can be used to download census geometries without any attribute data (the boundary of Austin, for example).
+
+-   `tidyverse` is actually a collection of several packages such as `tidyr`, `dplyr`, and `ggplot2` that can be used for transforming, analyzing, and visualizing data.
+
+-   `sf` is a package that allows essential GIS workflows to be executed in R.
+
+-   `mapview` provides functions for generating interactive maps. Other packages exist for creating detailed maps, but this one is focused on creating quick and simple maps for data exploration.
+
+## Importing data
+
+### Census data with tidycensus
+
+Before we import census data, it's often helpful to define what data we need and save them as variables in R that can be referenced later in our code. Below we create two lists using `c("item1", "item2",...)`.
+
+First we define which demographic variables we want to download as a list called `race_vars`. We also define a list of all the counties in the Austin Metropolitan Statistical Area.
+
+```{r}
+race_vars <- c(
+  "% Hispanic or Latino" = "DP05_0073P",
+  "% White" = "DP05_0079P",
+  "% Black" = "DP05_0080P",
+  "% American Indian and Alaska Native" = "DP05_0081P",
+  "% Asian" = "DP05_0082P",
+  "% Native Hawaiian and Other Pacific Islander" = "DP05_0083P",
+  "% Other Race" = "DP05_0084P",
+  "% Two or More Races" = "DP05_0085P"
+)
+
+austin_msa_counties <- c("Travis", "Hays", "Williamson","Caldwell","Bastrop")
+```
+
+::: callout-tip
+## Finding Variable Codes
+
+It can be tricky to find the right variable codes, but it's easy to look them up with the `load_variables()` function. You just have to provide the year and census dataset you're interested in to generate a searchable list. In this case, I used `view(load_variables(2022, "acs5/profile"))`
+:::
+
+Now it's time to use `tidycensus` to actually import our data. The most commonly used functions are `get_acs()` and `get_decennial()` which both take the same set of inputs.
+
+-   `geography` can be set to any of the census geographies such as state, county, tract, block, place, etc.
+
+-   `variable` can be set to a single variable code, or a list of multiple variables like we created above. Alternatively, if you want all the variables in a table, you can replace `variable` with `table` and the appropriate table code.
+
+-   `output` can be set to either `wide` or `tidy`. For multiple variables, wide will often make the most sense. If only pulling data for one variable (median income, for example), `tidy` is usually the best option. Experiment with both settings to see which works best for your needs.
+
+::: callout-tip
+## Understanding R packages and functions
+
+To see the full list of arguments for any function, as well as package documentation, type a ? followed by the package/function name into the R console. Example: `?get_acs`
+:::
+
+```{r}
+#| output: false
+austin_race <- get_acs(
+  geography = "tract",
+  variables = race_vars,
+  year = 2022,
+  output = "wide",
+  state = "TX",
+  county = austin_msa_counties,
+  geometry = TRUE,
+  cb = FALSE,
+  survey = "acs5"
+)
+```
+
+::: callout-warning
+Make sure to set `cb = FALSE` to get the same polygons as when downloading from the census website.
+:::
+
+### Import geographies with tigris
+
+If you don't need any tablular data and just want geographic layers from the census, you can use the `tigris` package to download any of the TIGER shapefiles. Below, for example, we download the geography for census places in Texas and then filter to get only the city of Austin's boundary.
+
+```{r}
+#| output: false
+austin_boundary <- places(
+  state = "TX"
+)%>%
+  filter(str_detect(NAME, "Austin"))
+
+```
+
+## Exploring the data
+
+Once you import the data with tidycensus, there are several simple functions you can use to explore the data variable we saved as `austin_race`.
+
+Use the `glimpse()` function to see a summary of the dataset including number of rows, column names/types, and the first few values in each column.
+
+```{r}
+glimpse(austin_race)
+```
+
+Using the `view()` function will open the data table in a new tab in RStudio, with standard table functions like sorting and filtering.
+
+```{r}
+view(austin_race)
+```
+
+Finally, the `mapview()` function can be used to easily generate a simple interactive map of your data. Use `zcol` to define which column you want to visualize.
+
+```{r}
+mapview(austin_race, zcol = "% BlackE")
+```
+
+## Exporting shapefiles for ArcGIS
+
+Although R can be used to create interactive web maps, often we will want to simply use R for importing and cleaning the data, and then using an enterprise tool like ArcGIS Pro to create the final layers to publish.
+
+The `sf` package contains the function `st_write` which can export our data into a wide variety of file formats. Here we export as a shapefile that can be easily opened in ArcGIS by specifying the file extension as `.shp`.
+
+```{r}
+#| eval: false
+
+#Set coordinate reference system (CRS) to EPSG code 2277
+st_transform(austin_race, 2277) 
+st_write(austin_race, "Austin Demographics 2022 Race.shp")
+```
+
+You can also export as a single `.geojson` file which can be easily read into future R scripts.
+
+```{r}
+#| eval: false
+st_write(austin_race, "Austin Demographics 2022 Race.geojson")
+```

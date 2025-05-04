@@ -8,6 +8,12 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - text: Topics
+        menu:
+          - href: intro.qmd
+            text: Introduction
+          - href: maps.qmd
+            text: Creating Maps
       - about.qmd
 
 format:
