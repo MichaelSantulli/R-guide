@@ -1,0 +1,151 @@
+---
+title: "Creating Maps"
+code-fold: true
+---
+
+## Setup and Data Import
+
+```{r}
+#| output: false
+library(tidyverse)
+library(tigris)
+library(tidycensus)
+library(sf)
+library(leaflet)
+library(mapview)
+library(formattable)
+library(scales)
+library(tmap)
+
+ld <- scales::label_dollar()
+
+
+
+austin <- places(state = "TX")%>%
+  filter(str_detect(NAME, "Austin"))
+  
+austin_boundary <- st_cast(austin, "MULTILINESTRING")
+
+median_income <- "B19013_001"
+
+austin_income <- get_acs(
+  geography = "tract",
+  variables = median_income,
+  state = "TX",
+  county = c("Travis","Hays","Williamson"),
+  geometry = TRUE
+)%>%
+  st_filter(austin, .predicate = st_intersects)
+
+austin_roads_primary <- primary_roads(year = 2023, filter_by= austin_boundary)
+travis_water <- area_water("TX","Travis",2023)
+
+
+
+
+```
+
+## Creating Static Maps
+
+### ggplot2 package
+
+```{r}
+
+ggplot(austin_income, aes(fill = estimate))+
+  geom_sf(color = NA)+
+  scale_fill_distiller(
+    name = "Dollars", 
+    labels = scales::dollar_format(), 
+    palette = "Spectral", direction = 1)+
+  theme_void()+
+  geom_sf(data = travis_water, size = 1, fill = "white", color = "white")+
+  #Optional city boundary below, uncomment to include:
+  #geom_sf(data = austin_boundary, size = .5, fill = NA, color = "black", linetype = "dashed")+
+  geom_sf(data = austin_roads_primary, , size = 3, fill = NA, color = "darkgray")+
+  labs(
+    title = "Austin Median Household Income",
+    caption = "Source: 2022 ACS 5-year estimates"
+  )
+  
+
+```
+
+### tmap package
+```{r}
+tm_shape(austin_income)+
+  tm_polygons(
+              col = "estimate",
+              palette = "Greens",
+              title = "2022 ACS 5-year estimates"
+              )+
+  tm_scale_bar(position = c("left", "bottom"))+ 
+  tm_compass(position = c("right", "top")) + 
+  tm_layout(title = "Austin Median\nHousehold Income",
+            frame = FALSE,
+            legend.outside = TRUE
+  )+
+  tm_shape(austin_roads_primary) +
+  tm_lines(col = "tan")+
+  tm_shape(travis_water)+
+  tm_polygons(col = "lightblue", border.col = "lightblue")
+```
+
+## Interactive Maps
+
+### mapview package
+
+```{r}
+mapview(austin_income, zcol = "estimate")+
+  mapview(austin_boundary)
+```
+
+### Leaflet package
+
+```{r}
+bins <- c(0, 25000, 50000, 75000, 100000, 125000, Inf)
+
+palette <- colorBin("Spectral", domain = austin_income$estimate, bins = bins)
+
+labels <- sprintf("<strong>%s</strong><br/>%g", austin_income$NAME, austin_income$estimate)%>% 
+  lapply(htmltools::HTML)
+
+leaflet(data = austin_income)%>%
+  clearBounds()%>%
+  addProviderTiles(providers$CartoDB.Positron)%>%
+  addPolygons(
+    fillColor = ~palette(estimate),
+    opacity = 1,
+    color = "NA",
+    weight = 0.5,
+    fillOpacity = 0.5,
+    highlightOptions = highlightOptions(
+      weight = 1.5,
+      color = "black",
+      fillOpacity = 1,
+      bringToFront = FALSE
+    ),
+    label = labels,
+    labelOptions = labelOptions(
+    style = list("font-weight" = "normal", padding = "3px 8px"),
+    textsize = "12px",
+    direction = "auto")
+  )%>%
+  addLegend(
+    pal = palette,
+    values = ~estimate,
+    opacity = 0.5,
+    title = NULL,
+    position = "bottomright"
+  )%>%
+  addPolylines(data = austin_boundary, color = "black", opacity = 1, weight = 2, dashArray = 3)
+
+
+```
+
+### mapgl package
+
+
+```{r}
+
+
+```
