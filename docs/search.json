@@ -1,17 +1,10 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "This website contains information about using the R programming language for geospatial data analysis, with an emphasis on working with US Census Bureau data through the tidycensus package.\ntest"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "R for Demographic Data Analysis",
     "section": "",
-    "text": "TEST EDIT\nR is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.\nThis demo shows how to use R to pull data from the Census API, explore the data in table and map form, and export to a shapefile that can be used to create publication-ready maps in ArcGIS."
+    "text": "R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.\nExplore a collection of examples and code snippets using the navigation bar above."
   },
   {
     "objectID": "index.html#loading-required-r-packages",
@@ -40,5 +33,89 @@
     "title": "R for Demographic Data Analysis",
     "section": "Exporting shapefiles for ArcGIS",
     "text": "Exporting shapefiles for ArcGIS\nAlthough R can be used to create interactive web maps, often we will want to simply use R for importing and cleaning the data, and then using an enterprise tool like ArcGIS Pro to create the final layers to publish.\nThe sf package contains the function st_write which can export our data into a wide variety of file formats. Here we export as a shapefile that can be easily opened in ArcGIS by specifying the file extension as .shp.\n\n#Set coordinate reference system (CRS) to EPSG code 2277\nst_transform(austin_race, 2277) \nst_write(austin_race, \"Austin Demographics 2022 Race.shp\")\n\nYou can also export as a single .geojson file which can be easily read into future R scripts.\n\nst_write(austin_race, \"Austin Demographics 2022 Race.geojson\")"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This website contains information about using the R programming language for geospatial data analysis, with an emphasis on working with US Census Bureau data through the tidycensus package.\ntest"
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "Introduction",
+    "section": "",
+    "text": "R is a statistical programming language that can be used for everything from importing data to automating repetitive analysis workflows to creating publication ready data visualizations including maps. It can also be used to build interactive data visualizations and web apps.\nThis demo shows how to use R to pull data from the Census API, explore the data in table and map form, and export to a shapefile that can be used to create publication-ready maps in ArcGIS."
+  },
+  {
+    "objectID": "intro.html#loading-required-r-packages",
+    "href": "intro.html#loading-required-r-packages",
+    "title": "Introduction",
+    "section": "Loading required R packages",
+    "text": "Loading required R packages\nR comes preloaded with many useful functions for statistical analysis, but much more functionality is available through extensions called packages that are developed by other R users.\nYou only need to install each package once on your computer, but whenever you are writing code in R you will have to load the relevant packages with the library() function.\n\nlibrary(tidycensus)\nlibrary(tigris)\nlibrary(tidyverse)\nlibrary(sf)\nlibrary(mapview)\n\nEach of these packages provides us with various helpful functions for geospatial data analysis:\n\ntidycensus contains functions for downloading datasets directly from the Census Bureau API, including associated geometries.\ntigris can be used to download census geometries without any attribute data (the boundary of Austin, for example).\ntidyverse is actually a collection of several packages such as tidyr, dplyr, and ggplot2 that can be used for transforming, analyzing, and visualizing data.\nsf is a package that allows essential GIS workflows to be executed in R.\nmapview provides functions for generating interactive maps. Other packages exist for creating detailed maps, but this one is focused on creating quick and simple maps for data exploration."
+  },
+  {
+    "objectID": "intro.html#importing-data",
+    "href": "intro.html#importing-data",
+    "title": "Introduction",
+    "section": "Importing data",
+    "text": "Importing data\n\nCensus data with tidycensus\nBefore we import census data, it’s often helpful to define what data we need and save them as variables in R that can be referenced later in our code. Below we create two lists using c(\"item1\", \"item2\",...).\nFirst we define which demographic variables we want to download as a list called race_vars. We also define a list of all the counties in the Austin Metropolitan Statistical Area.\n\nrace_vars &lt;- c(\n  \"% Hispanic or Latino\" = \"DP05_0073P\",\n  \"% White\" = \"DP05_0079P\",\n  \"% Black\" = \"DP05_0080P\",\n  \"% American Indian and Alaska Native\" = \"DP05_0081P\",\n  \"% Asian\" = \"DP05_0082P\",\n  \"% Native Hawaiian and Other Pacific Islander\" = \"DP05_0083P\",\n  \"% Other Race\" = \"DP05_0084P\",\n  \"% Two or More Races\" = \"DP05_0085P\"\n)\n\naustin_msa_counties &lt;- c(\"Travis\", \"Hays\", \"Williamson\",\"Caldwell\",\"Bastrop\")\n\n\n\n\n\n\n\nFinding Variable Codes\n\n\n\nIt can be tricky to find the right variable codes, but it’s easy to look them up with the load_variables() function. You just have to provide the year and census dataset you’re interested in to generate a searchable list. In this case, I used view(load_variables(2022, \"acs5/profile\"))\n\n\nNow it’s time to use tidycensus to actually import our data. The most commonly used functions are get_acs() and get_decennial() which both take the same set of inputs.\n\ngeography can be set to any of the census geographies such as state, county, tract, block, place, etc.\nvariable can be set to a single variable code, or a list of multiple variables like we created above. Alternatively, if you want all the variables in a table, you can replace variable with table and the appropriate table code.\noutput can be set to either wide or tidy. For multiple variables, wide will often make the most sense. If only pulling data for one variable (median income, for example), tidy is usually the best option. Experiment with both settings to see which works best for your needs.\n\n\n\n\n\n\n\nUnderstanding R packages and functions\n\n\n\nTo see the full list of arguments for any function, as well as package documentation, type a ? followed by the package/function name into the R console. Example: ?get_acs\n\n\n\naustin_race &lt;- get_acs(\n  geography = \"tract\",\n  variables = race_vars,\n  year = 2022,\n  output = \"wide\",\n  state = \"TX\",\n  county = austin_msa_counties,\n  geometry = TRUE,\n  cb = FALSE,\n  survey = \"acs5\"\n)\n\n\n\n\n\n\n\nWarning\n\n\n\nMake sure to set cb = FALSE to get the same polygons as when downloading from the census website.\n\n\n\n\nImport geographies with tigris\nIf you don’t need any tablular data and just want geographic layers from the census, you can use the tigris package to download any of the TIGER shapefiles. Below, for example, we download the geography for census places in Texas and then filter to get only the city of Austin’s boundary.\n\naustin_boundary &lt;- places(\n  state = \"TX\"\n)%&gt;%\n  filter(str_detect(NAME, \"Austin\"))"
+  },
+  {
+    "objectID": "intro.html#exploring-the-data",
+    "href": "intro.html#exploring-the-data",
+    "title": "Introduction",
+    "section": "Exploring the data",
+    "text": "Exploring the data\nOnce you import the data with tidycensus, there are several simple functions you can use to explore the data variable we saved as austin_race.\nUse the glimpse() function to see a summary of the dataset including number of rows, column names/types, and the first few values in each column.\n\nglimpse(austin_race)\n\nRows: 503\nColumns: 19\n$ GEOID                                           &lt;chr&gt; \"48453002447\", \"484530…\n$ NAME                                            &lt;chr&gt; \"Census Tract 24.47; T…\n$ `% Hispanic or LatinoE`                         &lt;dbl&gt; 71.8, 80.9, 34.1, 24.4…\n$ `% Hispanic or LatinoM`                         &lt;dbl&gt; 11.8, 6.9, 11.3, 7.5, …\n$ `% WhiteE`                                      &lt;dbl&gt; 20.4, 11.9, 51.8, 56.6…\n$ `% WhiteM`                                      &lt;dbl&gt; 9.1, 5.0, 11.4, 9.0, 9…\n$ `% BlackE`                                      &lt;dbl&gt; 4.1, 4.8, 2.1, 8.7, 0.…\n$ `% BlackM`                                      &lt;dbl&gt; 5.7, 4.8, 2.0, 6.3, 0.…\n$ `% American Indian and Alaska NativeE`          &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, 0.…\n$ `% American Indian and Alaska NativeM`          &lt;dbl&gt; 1.5, 0.7, 1.5, 3.1, 0.…\n$ `% AsianE`                                      &lt;dbl&gt; 0.1, 1.7, 8.8, 6.5, 17…\n$ `% AsianM`                                      &lt;dbl&gt; 0.3, 1.8, 7.1, 5.1, 7.…\n$ `% Native Hawaiian and Other Pacific IslanderE` &lt;dbl&gt; 0.0, 0.0, 0.3, 0.0, 0.…\n$ `% Native Hawaiian and Other Pacific IslanderM` &lt;dbl&gt; 1.5, 0.7, 0.5, 3.1, 0.…\n$ `% Other RaceE`                                 &lt;dbl&gt; 0.0, 0.0, 0.0, 0.4, 0.…\n$ `% Other RaceM`                                 &lt;dbl&gt; 1.5, 0.7, 1.5, 0.7, 0.…\n$ `% Two or More RacesE`                          &lt;dbl&gt; 3.6, 0.6, 2.9, 3.5, 1.…\n$ `% Two or More RacesM`                          &lt;dbl&gt; 4.1, 0.8, 2.5, 2.5, 1.…\n$ geometry                                        &lt;POLYGON [°]&gt; POLYGON ((-97.…\n\n\nUsing the view() function will open the data table in a new tab in RStudio, with standard table functions like sorting and filtering.\n\nview(austin_race)\n\nFinally, the mapview() function can be used to easily generate a simple interactive map of your data. Use zcol to define which column you want to visualize.\n\nmapview(austin_race, zcol = \"% BlackE\")"
+  },
+  {
+    "objectID": "intro.html#exporting-shapefiles-for-arcgis",
+    "href": "intro.html#exporting-shapefiles-for-arcgis",
+    "title": "Introduction",
+    "section": "Exporting shapefiles for ArcGIS",
+    "text": "Exporting shapefiles for ArcGIS\nAlthough R can be used to create interactive web maps, often we will want to simply use R for importing and cleaning the data, and then using an enterprise tool like ArcGIS Pro to create the final layers to publish.\nThe sf package contains the function st_write which can export our data into a wide variety of file formats. Here we export as a shapefile that can be easily opened in ArcGIS by specifying the file extension as .shp.\n\n#Set coordinate reference system (CRS) to EPSG code 2277\nst_transform(austin_race, 2277) \nst_write(austin_race, \"Austin Demographics 2022 Race.shp\")\n\nYou can also export as a single .geojson file which can be easily read into future R scripts.\n\nst_write(austin_race, \"Austin Demographics 2022 Race.geojson\")"
+  },
+  {
+    "objectID": "maps.html",
+    "href": "maps.html",
+    "title": "Creating Maps",
+    "section": "",
+    "text": "Code\nlibrary(tidyverse)\nlibrary(tigris)\nlibrary(tidycensus)\nlibrary(sf)\nlibrary(leaflet)\nlibrary(mapview)\nlibrary(formattable)\nlibrary(scales)\nlibrary(tmap)\n\nld &lt;- scales::label_dollar()\n\n\n\naustin &lt;- places(state = \"TX\")%&gt;%\n  filter(str_detect(NAME, \"Austin\"))\n  \naustin_boundary &lt;- st_cast(austin, \"MULTILINESTRING\")\n\nmedian_income &lt;- \"B19013_001\"\n\naustin_income &lt;- get_acs(\n  geography = \"tract\",\n  variables = median_income,\n  state = \"TX\",\n  county = c(\"Travis\",\"Hays\",\"Williamson\"),\n  geometry = TRUE\n)%&gt;%\n  st_filter(austin, .predicate = st_intersects)\n\naustin_roads_primary &lt;- primary_roads(year = 2023, filter_by= austin_boundary)\ntravis_water &lt;- area_water(\"TX\",\"Travis\",2023)"
+  },
+  {
+    "objectID": "maps.html#setup-and-data-import",
+    "href": "maps.html#setup-and-data-import",
+    "title": "Creating Maps",
+    "section": "",
+    "text": "Code\nlibrary(tidyverse)\nlibrary(tigris)\nlibrary(tidycensus)\nlibrary(sf)\nlibrary(leaflet)\nlibrary(mapview)\nlibrary(formattable)\nlibrary(scales)\nlibrary(tmap)\n\nld &lt;- scales::label_dollar()\n\n\n\naustin &lt;- places(state = \"TX\")%&gt;%\n  filter(str_detect(NAME, \"Austin\"))\n  \naustin_boundary &lt;- st_cast(austin, \"MULTILINESTRING\")\n\nmedian_income &lt;- \"B19013_001\"\n\naustin_income &lt;- get_acs(\n  geography = \"tract\",\n  variables = median_income,\n  state = \"TX\",\n  county = c(\"Travis\",\"Hays\",\"Williamson\"),\n  geometry = TRUE\n)%&gt;%\n  st_filter(austin, .predicate = st_intersects)\n\naustin_roads_primary &lt;- primary_roads(year = 2023, filter_by= austin_boundary)\ntravis_water &lt;- area_water(\"TX\",\"Travis\",2023)"
+  },
+  {
+    "objectID": "maps.html#creating-static-maps",
+    "href": "maps.html#creating-static-maps",
+    "title": "Creating Maps",
+    "section": "Creating Static Maps",
+    "text": "Creating Static Maps\n\nggplot2 package\n\n\nCode\nggplot(austin_income, aes(fill = estimate))+\n  geom_sf(color = NA)+\n  scale_fill_distiller(\n    name = \"Dollars\", \n    labels = scales::dollar_format(), \n    palette = \"Spectral\", direction = 1)+\n  theme_void()+\n  geom_sf(data = travis_water, size = 1, fill = \"white\", color = \"white\")+\n  #Optional city boundary below, uncomment to include:\n  #geom_sf(data = austin_boundary, size = .5, fill = NA, color = \"black\", linetype = \"dashed\")+\n  geom_sf(data = austin_roads_primary, , size = 3, fill = NA, color = \"darkgray\")+\n  labs(\n    title = \"Austin Median Household Income\",\n    caption = \"Source: 2022 ACS 5-year estimates\"\n  )\n\n\n\n\n\n\n\n\n\n\n\ntmap package\n\n\nCode\ntm_shape(austin_income)+\n  tm_polygons(\n              col = \"estimate\",\n              palette = \"Greens\",\n              title = \"2022 ACS 5-year estimates\"\n              )+\n  tm_scale_bar(position = c(\"left\", \"bottom\"))+ \n  tm_compass(position = c(\"right\", \"top\")) + \n  tm_layout(title = \"Austin Median\\nHousehold Income\",\n            frame = FALSE,\n            legend.outside = TRUE\n  )+\n  tm_shape(austin_roads_primary) +\n  tm_lines(col = \"tan\")+\n  tm_shape(travis_water)+\n  tm_polygons(col = \"lightblue\", border.col = \"lightblue\")"
+  },
+  {
+    "objectID": "maps.html#simple-interactive-maps-with-mapview",
+    "href": "maps.html#simple-interactive-maps-with-mapview",
+    "title": "Creating Maps",
+    "section": "Simple Interactive Maps with MapView",
+    "text": "Simple Interactive Maps with MapView\n\nmapview(austin_income, zcol = \"estimate\")+\n  mapview(austin_boundary)"
+  },
+  {
+    "objectID": "maps.html#customizing-interactive-maps-with-leaflet",
+    "href": "maps.html#customizing-interactive-maps-with-leaflet",
+    "title": "Creating Maps",
+    "section": "Customizing Interactive Maps with Leaflet",
+    "text": "Customizing Interactive Maps with Leaflet\n\nbins &lt;- c(0, 25000, 50000, 75000, 100000, 125000, Inf)\n\npalette &lt;- colorBin(\"Spectral\", domain = austin_income$estimate, bins = bins)\n\nlabels &lt;- sprintf(\"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g\", austin_income$NAME, austin_income$estimate)%&gt;% \n  lapply(htmltools::HTML)\n\nmap &lt;- leaflet(data = austin_income)%&gt;%\n  clearBounds()%&gt;%\n  addProviderTiles(providers$CartoDB.Positron)%&gt;%\n  addPolygons(\n    fillColor = ~palette(estimate),\n    opacity = 1,\n    color = \"NA\",\n    weight = 0.5,\n    fillOpacity = 0.5,\n    highlightOptions = highlightOptions(\n      weight = 1.5,\n      color = \"black\",\n      fillOpacity = 1,\n      bringToFront = FALSE\n    ),\n    label = labels,\n    labelOptions = labelOptions(\n    style = list(\"font-weight\" = \"normal\", padding = \"3px 8px\"),\n    textsize = \"12px\",\n    direction = \"auto\")\n  )%&gt;%\n  addLegend(\n    pal = palette,\n    values = ~estimate,\n    opacity = 0.5,\n    title = NULL,\n    position = \"bottomright\"\n  )%&gt;%\n  addPolylines(data = austin_boundary, color = \"black\", opacity = 1, weight = 2, dashArray = 3)\n\nWarning: sf layer has inconsistent datum (+proj=longlat +datum=NAD83 +no_defs).\nNeed '+proj=longlat +datum=WGS84'\nWarning: sf layer has inconsistent datum (+proj=longlat +datum=NAD83 +no_defs).\nNeed '+proj=longlat +datum=WGS84'\n\nmap"
+  },
+  {
+    "objectID": "maps.html#interactive-maps",
+    "href": "maps.html#interactive-maps",
+    "title": "Creating Maps",
+    "section": "Interactive Maps",
+    "text": "Interactive Maps\n\nmapview package\n\n\nCode\nmapview(austin_income, zcol = \"estimate\")+\n  mapview(austin_boundary)\n\n\n\n\n\n\n\n\nLeaflet package\n\n\nCode\nbins &lt;- c(0, 25000, 50000, 75000, 100000, 125000, Inf)\n\npalette &lt;- colorBin(\"Spectral\", domain = austin_income$estimate, bins = bins)\n\nlabels &lt;- sprintf(\"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g\", austin_income$NAME, austin_income$estimate)%&gt;% \n  lapply(htmltools::HTML)\n\nleaflet(data = austin_income)%&gt;%\n  clearBounds()%&gt;%\n  addProviderTiles(providers$CartoDB.Positron)%&gt;%\n  addPolygons(\n    fillColor = ~palette(estimate),\n    opacity = 1,\n    color = \"NA\",\n    weight = 0.5,\n    fillOpacity = 0.5,\n    highlightOptions = highlightOptions(\n      weight = 1.5,\n      color = \"black\",\n      fillOpacity = 1,\n      bringToFront = FALSE\n    ),\n    label = labels,\n    labelOptions = labelOptions(\n    style = list(\"font-weight\" = \"normal\", padding = \"3px 8px\"),\n    textsize = \"12px\",\n    direction = \"auto\")\n  )%&gt;%\n  addLegend(\n    pal = palette,\n    values = ~estimate,\n    opacity = 0.5,\n    title = NULL,\n    position = \"bottomright\"\n  )%&gt;%\n  addPolylines(data = austin_boundary, color = \"black\", opacity = 1, weight = 2, dashArray = 3)\n\n\nWarning: sf layer has inconsistent datum (+proj=longlat +datum=NAD83 +no_defs).\nNeed '+proj=longlat +datum=WGS84'\nWarning: sf layer has inconsistent datum (+proj=longlat +datum=NAD83 +no_defs).\nNeed '+proj=longlat +datum=WGS84'\n\n\n\n\n\n\n\n\nmapgl package"
   }
 ]
