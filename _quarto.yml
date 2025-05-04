@@ -12,6 +12,8 @@ website:
         menu:
           - href: intro.qmd
             text: Introduction
+          - href: dataviz.qmd
+            text: Data Visualization
           - href: maps.qmd
             text: Creating Maps
       - about.qmd
